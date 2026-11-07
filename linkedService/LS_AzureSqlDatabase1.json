@@ -1,0 +1,23 @@
+{
+	"name": "LS_AzureSqlDatabase1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sql-server-caresync-dodo.database.windows.net",
+			"database": "sql-db-caresync",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "adminuser",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sql-server-pwd"
+			}
+		}
+	}
+}
