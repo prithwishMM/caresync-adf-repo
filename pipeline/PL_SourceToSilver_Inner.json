@@ -327,7 +327,7 @@
 							"value": "neon_postgres",
 							"activities": [
 								{
-									"name": "source to landing ingestion",
+									"name": "Postgres_source to landing ingestion",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -392,7 +392,7 @@
 							"value": "adls_csv",
 							"activities": [
 								{
-									"name": "Copy data1",
+									"name": "ADLS_Copy data",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -435,7 +435,8 @@
 												"folder": {
 													"value": "@activity('Read Table Details').output.firstRow.source_path",
 													"type": "Expression"
-												}
+												},
+												"container": "source"
 											}
 										}
 									],
