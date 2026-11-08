@@ -1021,6 +1021,23 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Gold notebook failed failed",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "silver to gold",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": "Inner pipeline failed",
+										"errorCode": "500"
+									}
 								}
 							]
 						}
@@ -1211,6 +1228,16 @@
 											]
 										}
 									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": "Inner pipeline failed",
+										"errorCode": "500"
+									}
+								},
+								{
+									"name": "update pipeline as failed_copy1",
+									"type": "Fail",
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"message": "Inner pipeline failed",
