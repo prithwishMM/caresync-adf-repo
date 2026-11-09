@@ -1,1 +1,18 @@
-{}
+{
+	"email_receipients": {
+		"type": "string",
+		"value": "prithwish.ray.in@gmail.com"
+	},
+	"cc": {
+		"type": "string",
+		"value": "prithwishray@outlook.com"
+	},
+	"env": {
+		"type": "string",
+		"value": "DEV"
+	},
+	"logic_apps_url": {
+		"type": "string",
+		"value": "https://prod-26.northcentralus.logic.azure.com:443/workflows/206fb52224ed46278f520c40ea5d6c2a/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=v61jCKWMcuJ7N95yzCS8wSZEJ7t_cdf1Xf8L7rkXPAk"
+	}
+}
