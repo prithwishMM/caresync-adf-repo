@@ -5,6 +5,10 @@
 			"email_receipients": {
 				"type": "string",
 				"value": "prithwish.ray.in@gmail.com"
+			},
+			"cc": {
+				"type": "string",
+				"value": "prithwishray@outlook.com"
 			}
 		}
 	},
