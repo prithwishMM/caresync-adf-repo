@@ -1,0 +1,212 @@
+{
+	"name": "PL_Email",
+	"properties": {
+		"activities": [
+			{
+				"name": "Table staus check and email",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select * from ctrl.audit_log \nwhere adf_run_id= '@{pipeline().parameters.adf_run_id}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Prepare Email Body Header",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "body_header",
+					"value": "Ingestion and Transformation has been completed and below is the status:"
+				}
+			},
+			{
+				"name": "Prepare Email Footer",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "body_footer",
+					"value": "Pls reach out to dummy@email.com for any queries."
+				}
+			},
+			{
+				"name": "Email Subject",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "success status count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "email_status",
+					"value": {
+						"value": "@{pipeline().globalParameters.env} |@{\n    if(greater(activity('success status count').output.firstRow.count,0)\n    ,'FAILED' \n    ,'SUCCESS' \n      )\n    }|CareSync Master Run",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "success status count",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select count(*) count from ctrl.audit_log \nwhere adf_run_id= '@{pipeline().parameters.adf_run_id}'\nand status !='SUCCESS'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "logic_apps body",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Table staus check and email",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Prepare Email Body Header",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Prepare Email Footer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Email Subject",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "logic_apps body",
+					"value": {
+						"value": "{\n  \"subject\":\"@{variables('email_status')}\",\n  \"email_receipients\":\"@{pipeline().globalParameters.email_receipients}\",\n  \"cc\":\"@{pipeline().globalParameters.cc}\",\n  \"body_header\":\"@{variables('body_header')}\",\n  \"body_footer\":\"@{variables('body_footer')}\",\n  \"status\":@{activity('Table staus check and email').output.value}\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "send emails",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "logic_apps body",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-type": "application/json"
+					},
+					"url": {
+						"value": "@pipeline().globalParameters.logic_apps_url",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "@variables('logic_apps body')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"adf_run_id": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"body_header": {
+				"type": "String"
+			},
+			"body_footer": {
+				"type": "String"
+			},
+			"email_status": {
+				"type": "String"
+			},
+			"logic_apps body": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
