@@ -1,0 +1,12 @@
+{
+	"name": "adf-caresync-prithwish",
+	"properties": {
+		"globalParameters": {
+			"email_receipients": {
+				"type": "string",
+				"value": "prithwish.ray.in@gmail.com"
+			}
+		}
+	},
+	"location": "centralindia"
+}
