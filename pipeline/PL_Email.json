@@ -148,7 +148,7 @@
 				"typeProperties": {
 					"variableName": "logic_apps body",
 					"value": {
-						"value": "{\n  \"subject\":\"@{variables('email_status')}\",\n  \"email_receipients\":\"@{pipeline().globalParameters.email_receipients}\",\n  \"cc\":\"@{pipeline().globalParameters.cc}\",\n  \"body_header\":\"@{variables('body_header')}\",\n  \"body_footer\":\"@{variables('body_footer')}\",\n  \"status\":@{activity('Table staus check and email').output.value}\n}",
+						"value": "{\n  \"subject\":\"@{variables('email_status')}\",\n  \"email_receipients\":\"@{pipeline().globalParameters.email_receipients}\",\n  \"cc\":\"@{pipeline().globalParameters.cc}\",\n  \"body_header\":\"@{variables('body_header')}\",\n  \"body_footer\":\"@{variables('body_footer')}\",\n  \"status_table\":@{activity('Table staus check and email').output.value}\n}",
 						"type": "Expression"
 					}
 				}
@@ -190,7 +190,8 @@
 		],
 		"parameters": {
 			"adf_run_id": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "de9ded2d-7543-40ab-9b3c-eff7f415ec08"
 			}
 		},
 		"variables": {
