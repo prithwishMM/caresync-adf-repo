@@ -1,9 +1,10 @@
 {
-	"name": "test",
+	"name": "ci_cd_test from feature",
 	"properties": {
 		"activities": [
 			{
 				"name": "Copy data1_test",
+				"description": "this is to test ci cd process",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
