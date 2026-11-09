@@ -9,6 +9,10 @@
 			"cc": {
 				"type": "string",
 				"value": "prithwishray@outlook.com"
+			},
+			"env": {
+				"type": "string",
+				"value": "DEV"
 			}
 		}
 	},
